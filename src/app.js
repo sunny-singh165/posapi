@@ -5,7 +5,7 @@ const mainRoutes = require('./routes/index');
 
 
 app.use(cors({
-    origin: ['https://posinventory.in', 'http://localhost:5173'], // your React frontend URL
+    origin: ['*','https://posinventory.in', 'http://localhost:5173'], // your React frontend URL
     // origin: ['http://localhost:5173'], // your React frontend URL
     credentials: true
 }));
