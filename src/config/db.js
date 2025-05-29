@@ -4,7 +4,7 @@ require('dotenv').config();
 const pool = mysql.createPool({
   host: pos.massways.com,
   user: masswayscom_posdbuser,
-  password: posdb@2025,
+  password: posdbuser@2025,
   database: masswayscom_posdb,
   port: 3306
 });
