@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
-exports.getAllKots = async () => {
-    const [rows] = await db.query('SELECT * FROM kots');
+exports.getAllKots = async (restaurantid) => {
+    const [rows] = await db.query('SELECT * FROM kots where restaurantid = ?', [restaurantid]);
     return rows;
 }
 

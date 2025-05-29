@@ -38,7 +38,7 @@ router.get('/gettables', getTables);
 router.get('/gettable/:id', getTableById);
 router.get('/getdeliveryboys', getDeliveryboys);
 router.get('/getpartners', getPartners);
-router.get('/getorders', getOrders);
+router.get('/getorders/:restaurantid/:todaydate', getOrders);
 router.get('/getorder/:id', getOrder);
 
 

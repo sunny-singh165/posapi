@@ -1,7 +1,9 @@
 const Orders = require('../models/ordersModel');
 
 exports.getOrders= async (req, res) => {
-    const orders = await Orders.getAllOrders();
+    const restaurantid = req.params.restaurantid
+    const todaydate = req.params.todaydate
+    const orders = await Orders.getAllOrders(restaurantid, todaydate);
     res.json(orders);
 };
 

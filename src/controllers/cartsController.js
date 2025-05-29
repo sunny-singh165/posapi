@@ -1,7 +1,8 @@
 const Carts = require('../models/cartsModel');
 
 exports.getCarts= async (req, res) => {
-    const carts = await Carts.getAllCarts();
+    const restaurantid = req.params.restaurantid
+    const carts = await Carts.getAllCarts(restaurantid);
     res.json(carts);
 };
 

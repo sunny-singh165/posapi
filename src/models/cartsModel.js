@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
-exports.getAllCarts = async () => {
-    const [rows] = await db.query('SELECT * FROM carts');
+exports.getAllCarts = async (restaurantid) => {
+    const [rows] = await db.query('SELECT * FROM carts restaurantid = ?', [restaurantid]);
     return rows;
 }
 

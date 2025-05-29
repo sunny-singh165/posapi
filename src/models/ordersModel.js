@@ -3,12 +3,13 @@ const db = require('../config/db');
 exports.createOrder = async (orderdata) => {
     const date = orderdata.orderdate
     let orderId = orderdata.id;
+    let restaurantid = orderdata.restaurantid
     try {
 
         if (orderId == 0 ){
             const [orderResult] = await db.execute(
-                'INSERT INTO orders (tablename,partner,ordertype,deliveryboy, orderdate) VALUES (?,?,?,?,?)',
-                [JSON.stringify(orderdata.selectedTable), JSON.stringify(orderdata.selectedPartner), orderdata.ordertype, JSON.stringify(orderdata.deliveryBoy), orderdata.orderdate]
+                'INSERT INTO orders (tablename,partner,ordertype,deliveryboy, orderdate, restaurantid) VALUES (?,?,?,?,?,?)',
+                [JSON.stringify(orderdata.selectedTable), JSON.stringify(orderdata.selectedPartner), orderdata.ordertype, JSON.stringify(orderdata.deliveryBoy), orderdata.orderdate, restaurantid]
             );
         
         
@@ -18,30 +19,30 @@ exports.createOrder = async (orderdata) => {
         if (orderdata.kots.length > 0) {
             for (const kot of orderdata.kots) {
                 const [kotResult] = await db.execute(
-                    'INSERT INTO kots (orderid, kotdate) VALUES (?,?)',
-                    [orderId, date]
+                    'INSERT INTO kots (orderid, kotdate, restaurantid) VALUES (?,?,?)',
+                    [orderId, date, restaurantid]
                 );
                 const kotId = kotResult.insertId;
 
                 for (const item of orderdata.cart) {
                     await db.execute(
-                        'INSERT INTO carts (prodid,prodname,produom, qty, rate, dis, kotid,orderid) VALUES (?, ?, ?, ?, ?, ?,?,?)',
-                        [item.id, item.prodname, item.produom, item.qty, item.rate, item.dis, kotId, orderId]
+                        'INSERT INTO carts (prodid,prodname,produom, qty, rate, dis, kotid, orderid, restaurantid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [item.id, item.prodname, item.produom, item.qty, item.rate, item.dis, kotId, orderId, restaurantid]
                     );
                 }
             }
         } else {
 
             const [kotResult] = await db.execute(
-                'INSERT INTO kots (orderId, kotdate) VALUES (?,?)',
-                [orderId, date]
+                'INSERT INTO kots (orderId, kotdate, restaurantid) VALUES (?,?,?)',
+                [orderId, date, restaurantid]
             );
             const kotId = kotResult.insertId;
 
             for (const item of orderdata.cart) {
                 await db.execute(
-                    'INSERT INTO carts (prodid,prodname,produom, qty, rate, dis, kotid) VALUES (?, ?, ?, ?, ?, ?,?)',
-                    [item.id, item.prodname, item.produom, item.qty, item.rate, item.dis, kotId]
+                    'INSERT INTO carts (prodid,prodname,produom, qty, rate, dis, kotid, restaurantid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [item.id, item.prodname, item.produom, item.qty, item.rate, item.dis, kotId, restaurantid]
                 );
             }
 
@@ -72,22 +73,23 @@ exports.getOrder = async (req, res) => {
         res.json({ ...orderRows[0], kots: kotRows });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error fetching order');
+        res.status(500).send('Error while fetching order');
     }
 };
 
 
 
-exports.getAllOrders = async (req, res) => {
+exports.getAllOrders = async (restoid, todaydate) => {
     try {
+
         // Get all orders
-        const [orders] = await db.execute('SELECT * FROM orders where status = 0');
+        const [orders] = await db.execute('SELECT * FROM orders where status = 0 and restaurantid = ? and orderdate = ?', [restoid, todaydate]);
 
         // Get all KOTs
-        const [kots] = await db.execute('SELECT * FROM kots');
+        const [kots] = await db.execute('SELECT * FROM kots where restaurantid = ? and kotdate = ?', [restoid, todaydate]);
 
         // Get all Cart Items
-        const [cart] = await db.execute('SELECT * FROM carts');
+        const [cart] = await db.execute('SELECT * FROM carts where restaurantid = ?', [restoid]);
 
         // Build associations
         const orderMap = {};

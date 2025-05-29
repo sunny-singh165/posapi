@@ -1,7 +1,8 @@
 const Kots = require('../models/kotsModel');
 
 exports.getKots= async (req, res) => {
-    const kots = await Kots.getAllKots();
+    const restaurantid = req.params.restaurantid
+    const kots = await Kots.getAllKots(restaurantid);
     res.json(kots);
 };
 
