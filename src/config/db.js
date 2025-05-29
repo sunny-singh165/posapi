@@ -2,10 +2,10 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 const pool = mysql.createPool({
-  host: pos.massways.com,
-  user: masswayscom_posdbuser,
-  password: posdbuser@2025,
-  database: masswayscom_posdb,
+  host: 'pos.massways.com',
+  user: 'masswayscom_posdbuser',
+  password: 'posdbuser@2025',
+  database: 'masswayscom_posdb',
   port: 3306
 });
 
